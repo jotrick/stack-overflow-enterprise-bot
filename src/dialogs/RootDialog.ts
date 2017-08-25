@@ -12,7 +12,7 @@ import { AnimatedGifDialog } from "./examples/basic/AnimatedGifDialog";
 import { DeeplinkDialog } from "./examples/basic/DeeplinkDialog";
 import { GetLastDialogUsedDialog } from "./examples/basic/GetLastDialogUsedDialog";
 import { HelloDialog } from "./examples/basic/HelloDialog";
-import { HelpDialog } from "./examples/basic/HelpDialog";
+
 import { HeroCardDialog } from "./examples/basic/HeroCardDialog";
 import { MultiDialog } from "./examples/basic/MultiDialog";
 import { O365ConnectorCardDialog } from "./examples/basic/O365ConnectorCardDialog";
@@ -39,6 +39,14 @@ import { UpdateTextMsgSetupDialog } from "./examples/teams/UpdateTextMsgSetupDia
 // Add imports for Stack Overflow Enterprise dialogs
 import { SOELoginDialog } from "./SOELoginDialog";
 import { SOEShowQuestionsDialog } from "./SOEShowQuestionsDialog";
+import { AddTagsDialog } from "./AddTagsDialog";
+import { ChannelDataDialog } from "./ChannelDataDialog";
+import { HelpDialog } from "./HelpDialog";
+import { RemoveTagsDialog } from "./RemoveTagsDialog";
+import { SendSimpleTagNotificationDialog } from "./SendSimpleTagNotificationDialog";
+import { SendSOEQuestionNotificationDialog } from "./SendSOEQuestionNotificationDialog";
+import { UpdateSOEQuestionNotificationDialog } from "./UpdateSOEQuestionNotificationDialog";
+import { SettingsDialog } from "./SettingsDialog";
 
 // Main dialog that handles commands
 export class RootDialog extends builder.IntentDialog {
@@ -71,7 +79,7 @@ export class RootDialog extends builder.IntentDialog {
         new DeeplinkDialog(bot);
         new GetLastDialogUsedDialog(bot);
         new HelloDialog(bot);
-        new HelpDialog(bot);
+
         new HeroCardDialog(bot);
         new MultiDialog(bot);
         new O365ConnectorCardDialog(bot);
@@ -98,7 +106,14 @@ export class RootDialog extends builder.IntentDialog {
         // Add child dialogs
         new SOELoginDialog(bot);
         new SOEShowQuestionsDialog(bot);
-
+        new AddTagsDialog(bot);
+        new ChannelDataDialog(bot);
+        new HelpDialog(bot);
+        new RemoveTagsDialog(bot);
+        new SendSimpleTagNotificationDialog(bot);
+        new SendSOEQuestionNotificationDialog(bot);
+        new UpdateSOEQuestionNotificationDialog(bot);
+        new SettingsDialog(bot);
     }
 
     // Handle unrecognized input

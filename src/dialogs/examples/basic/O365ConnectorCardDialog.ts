@@ -3,7 +3,6 @@ import { TriggerActionDialog } from "../../../utils/TriggerActionDialog";
 import { DialogIds } from "../../../utils/DialogIds";
 import { DialogMatches } from "../../../utils/DialogMatches";
 import { Strings } from "../../../locale/locale";
-//import * as teams from "botbuilder-teams";
 
 export class O365ConnectorCardDialog extends TriggerActionDialog {
 

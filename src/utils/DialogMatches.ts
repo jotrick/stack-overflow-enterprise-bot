@@ -1,3 +1,15 @@
+function regexCreator(text: string): RegExp {
+    // Example of what is created: /(?:(?:^helps$)|(?:^help\s)|(?:\shelp$)|(?:\shelp\s))/i;
+    let onlyTextClosure = "(?:^" + text + "$)";
+    let textAtStartClosure = "(?:^" + text + "\\s)";
+    let textAtEndClosure = "(?:\\s" + text + "$)";
+    let textSurroundedByWhitespaceClosure = "(?:\\s" + text + "\\s)";
+    let anyOfAboveRegExClosure = "(?:" + onlyTextClosure + "|" + textAtStartClosure + "|" + textAtEndClosure + "|" + textSurroundedByWhitespaceClosure + ")";
+    let ignoreCaseFlag = "i";
+
+    return new RegExp(anyOfAboveRegExClosure, ignoreCaseFlag);
+}
+
 // Regular Expressions and intent strings for Dialogs
 // tslint:disable-next-line:variable-name
 export const DialogMatches = {
@@ -11,7 +23,7 @@ export const DialogMatches = {
     GetLastDialogUsedDialogMatch: /last dialog/i,
     HelloDialogMatch: /hello/i,
     HelloDialogMatch2: /hi/i,
-    HelpDialogMatch: /help/i,
+
     HeroCardDialogMatch: /hero card/i,
     MultiDialogMatch: /multi dialog 1/i,
     MultiDialog2Match: /multi dialog 2/i,
@@ -36,8 +48,19 @@ export const DialogMatches = {
     UpdateTextMsgDialogMatch: /update text message/i,
     UpdateTextMsgSetupDialogMatch: /setup text message/i,
     // *************************** END OF EXAMPLES *********************************
-    SOEShowQuestionsMatch: /soe questions/i,
 
     // Add regex or string intent matches for dialogs
-
+    SOEShowQuestionsMatch: /soe questions/i,
+    AddTagsDialogMatch: /follow tags?(.*)/i,
+    AddTagsDialogMatch2: /add tags?(.*)/i,
+    ChannelDataDialogMatch: /channel data/i,
+    HelpDialogMatch: regexCreator("help"),
+    RemoveTagsDialogMatch: /unfollow tags?(.*)/i,
+    RemoveTagsDialogMatch2: /remove tags?(.*)/i,
+    Send_Simple_Tag_Notification_Dialog_Intent: "Send_Simple_Tag_Notification_Dialog_Intent",
+    Send_SOE_Question_Notification_Dialog_Intent: "Send_SOE_Question_Notification_Dialog_Intent",
+    Update_SOE_Question_Notification_Dialog_Intent: "Update_SOE_Question_Notification_Dialog_Intent",
+    SettingsDialogMatch: /show followed tags/i,
+    SettingsDialogMatch2: regexCreator("settings?"),
+    SettingsDialogMatch3: regexCreator("config"),
 };

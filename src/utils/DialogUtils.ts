@@ -1,12 +1,75 @@
 import * as builder from "botbuilder";
 import * as request from "request";
 import * as urlJoin from "url-join";
+import * as config from "config";
 
 export interface MultiTriggerActionDialogEntry {
     dialogId: string;
     match: RegExp | RegExp[] | string | string[];
     action: builder.IDialogWaterfallStep | builder.IDialogWaterfallStep[];
 }
+
+export function loadSessionAsync_New (bot: builder.UniversalBot, eventOrConversationId: builder.IEvent|string, serviceUrl?: string, locale?: string): Promise<builder.Session> {
+    let address: builder.IChatConnectorAddress = null;
+    if (typeof(eventOrConversationId) === "string") {
+        // eventOrConversationId is a conversationId
+        // if conversationId is passed in, then need to pass in an optional locale in order to get localization
+        // if conversationId is passed in, then serviceUrl is not optional
+        if (!serviceUrl) {
+            return null;
+        }
+
+        let conversationId = eventOrConversationId;
+        address = {
+            channelId: "msteams",
+            user: {
+                id: config.get("bot.botId"),
+            },
+            conversation: {
+                // isGroup: true,
+                id: conversationId,
+            },
+            // channelData: {
+            //     tenant: {
+            //         id: session.message.sourceEvent.tenant.id,
+            //     },
+            // },
+            bot: {
+                id: config.get("bot.botId"),
+                // The bot's name can be used, but is not necessary
+                // name: session.message.address.bot.name,
+            },
+            serviceUrl: serviceUrl,
+            // useAuth: true,
+        };
+    } else {
+        // eventOrConversationId is a builder.IEvent
+        let event = eventOrConversationId;
+        address = event.address;
+        locale = getLocaleFromEvent(event);
+    }
+
+    if (!address) {
+        return null;
+    }
+
+    return new Promise<builder.Session>((resolve, reject) => {
+        bot.loadSession(address, (err: any, session: builder.Session) => {
+            if (!err) {
+                if (locale) {
+                    (session as any)._locale = locale;
+                    session.localizer.load(locale, (err2) => {
+                        resolve(session);
+                    });
+                } else {
+                    resolve(session);
+                }
+            } else {
+                reject(err);
+            }
+        });
+    });
+};
 
 export function loadSessionAsync (bot: builder.UniversalBot, event: builder.IEvent): Promise<builder.Session> {
     let address = event.address;
@@ -157,4 +220,31 @@ function createAddressFromResponse(address: builder.IChatConnectorAddress, respo
         result.id = response["activityId"];
     }
     return result;
+}
+
+// Get the channel id in the event
+export function getChannelId(event: builder.IEvent): string {
+    let sourceEvent = event.sourceEvent;
+    if (sourceEvent) {
+        if (sourceEvent.teamsChannelId) {
+            return sourceEvent.teamsChannelId;
+        } else if (sourceEvent.channel) {
+            return sourceEvent.channel.id;
+        }
+    }
+
+    return "";
+}
+
+// Get the team id in the event
+export function getTeamId(event: builder.IEvent): string {
+    let sourceEvent = event.sourceEvent;
+    if (sourceEvent) {
+        if (sourceEvent.team) {
+            return sourceEvent.team.id;
+        } else if (sourceEvent.teamsTeamId) {
+            return sourceEvent.teamsTeamId;
+        }
+    }
+    return "";
 }

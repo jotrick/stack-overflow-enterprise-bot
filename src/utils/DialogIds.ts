@@ -12,7 +12,7 @@ export const DialogIds = {
     AnimatedGifDialogId: "AnimatedGifDialog",
     DeeplinkDialogId: "DeeplinkDialog",
     HelloDialogId: "HelloDialog",
-    HelpDialogId: "HelpDialog",
+
     HeroCardDialogId: "HeroCardDialog",
     MultiDialogId: "MultiDialog",
     MultiDialog2Id: "MultiDialog2",
@@ -41,4 +41,12 @@ export const DialogIds = {
     // Stack Overflow Enterprise Dialogs
     SOELoginDialogId: "SOELoginDialog",
     SOEShowQuestionsId: "SOEShowQuestions",
+    AddTagsDialogId: "AddTagsDialog",
+    ChannelDataDialogId: "ChannelDataDialog",
+    HelpDialogId: "HelpDialog",
+    RemoveTagsDialogId: "RemoveTagsDialog",
+    SendSimpleTagNotificationDialogId: "SendSimpleTagNotificationDialog",
+    SendSOEQuestionNotificationDialogId: "SendSOEQuestionNotificationDialog",
+    UpdateSOEQuestionNotificationDialogId: "UpdateSOEQuestionNotificationDialog",
+    SettingsDialogId: "SettingsDialog",
 };
