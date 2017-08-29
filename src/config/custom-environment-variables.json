@@ -26,6 +26,7 @@
         "soeTenantBase": "STACK_OVERFLOW_ENTERPRISE_TENANT",
         "soeGlobalApiKey": "STACK_OVERFLOW_ENTERPRISE_GLOBAL_API_KEY",
         "office365TenantId": "OFFICE_365_TENANT_ID",
+        "testBatchJobValidationKey": "TEST_BATCH_JOB_VALIDATION_KEY",
         "batchJobValidationKey": "BATCH_JOB_VALIDATION_KEY"
     },    
     "channelStorageType": "CHANNEL_STORAGE_TYPE",

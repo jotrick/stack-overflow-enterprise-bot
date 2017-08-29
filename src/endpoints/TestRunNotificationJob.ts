@@ -7,14 +7,16 @@ import { loadSessionAsync_New } from "../utils/DialogUtils";
 import { DialogIds } from "../utils/DialogIds";
 // import { UpdateEntry } from "../storage/MongoDbSOEQuestionStorage";
 import { NotificationJob } from "../notificationJob/NotificationJob";
+import * as config from "config";
 
 export class TestRunNotificationJob {
     public static getRequestHandler(bot: SOEBot): express.RequestHandler {
         return async function (req: any, res: any, next: any): Promise<void> {
             try {
-                if (req.query.tag) {
+                let testBatchJobValidationKey = config.get("stackOverflowEnterprise.testBatchJobValidationKey");
+                if (req.query && req.query.key === testBatchJobValidationKey && req.query.tag) {
                     TestRunNotificationJob.tagNameNotification(bot, req, res, next);
-                } else if (req.query.timestamp) {
+                } else if (req.query && req.query.key === testBatchJobValidationKey && req.query.timestamp) {
                     TestRunNotificationJob.timestampNotification(bot, req, res, next);
                 } else {
                     TestRunNotificationJob.doNothingSimpleResponse(req, res, next);
