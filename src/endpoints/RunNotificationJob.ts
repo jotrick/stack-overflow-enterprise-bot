@@ -9,7 +9,7 @@ export class RunNotificationJob {
             try {
                 // simple validation so we do not accept unwanted requests
                 let batchJobValidationKey = config.get("stackOverflowEnterprise.batchJobValidationKey");
-                if (req.headers && req.headers.Authorization && req.headers.Authorization === "Basic " + batchJobValidationKey) {
+                if (req.headers && req.headers.authorization === "Basic " + batchJobValidationKey) {
                     RunNotificationJob.runNotificationBatchJob(bot, req, res, next);
                 } else {
                     // do nothing
