@@ -31,14 +31,14 @@ export class MongoDbBotStorage implements builder.IBotStorage {
                 if (context.persistUserData) {
                     // Read userData
                     list.push({
-                        id: this.getUserDataId(context),
+                        key: this.getUserDataKey(context),
                         field: Fields.userData,
                     });
                 }
                 if (context.conversationId) {
                     // Read privateConversationData
                     list.push({
-                        id: this.getPrivateConversationDataId(context),
+                        key: this.getPrivateConversationDataKey(context),
                         field: Fields.privateConversationData,
                     });
                 }
@@ -46,7 +46,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
             if (context.persistConversationData && context.conversationId) {
                 // Read conversationData
                 list.push({
-                    id: this.getConversationDataId(context),
+                    key: this.getConversationDataKey(context),
                     field: Fields.conversationData,
                 });
             }
@@ -54,7 +54,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
             // Execute reads in parallel
             let data: builder.IBotStorageData = {};
             async.each(list, (entry, cb) => {
-                let filter = { "_id": entry.id };
+                let filter = { "key": entry.key };
                 this.botStateCollection.findOne(filter, (error: any, entity: any) => {
                     if (!error) {
                         if (entity) {
@@ -95,7 +95,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
                 if (context.persistUserData) {
                     // Write userData
                     list.push({
-                        id: this.getUserDataId(context),
+                        key: this.getUserDataKey(context),
                         userId: context.userId,
                         field: Fields.userData,
                         botData: data.userData,
@@ -104,7 +104,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
                 if (context.conversationId) {
                     // Write privateConversationData
                     list.push({
-                        id: this.getPrivateConversationDataId(context),
+                        key: this.getPrivateConversationDataKey(context),
                         userId: context.userId,
                         conversationId: context.conversationId,
                         field: Fields.privateConversationData,
@@ -115,7 +115,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
             if (context.persistConversationData && context.conversationId) {
                 // Write conversationData
                 list.push({
-                    id: this.getConversationDataId(context),
+                    key: this.getConversationDataKey(context),
                     conversationId: context.conversationId,
                     field: Fields.conversationData,
                     botData: data.conversationData,
@@ -124,7 +124,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
 
             // Execute writes in parallel
             async.each(list, (entry, errorCallback) => {
-                let filter = { "_id": entry.id };
+                let filter = { "key": entry.key };
                 // let document = {
                 //     // Tag each document with user id so we can find all user data later
                 //     userId: entry.userId || "",
@@ -132,6 +132,7 @@ export class MongoDbBotStorage implements builder.IBotStorage {
                 // };
                 let document = entry.botData;
                 document.userId = entry.userId || "";
+                document.key = entry.key;
                 this.botStateCollection.updateOne(filter, document, { upsert: true }, err => errorCallback(err));
             }, (err) => {
                 if (callback) {
@@ -179,19 +180,19 @@ export class MongoDbBotStorage implements builder.IBotStorage {
     }
 
     // Get id for user data documents
-    private getUserDataId(context: builder.IBotStorageContext): string {
+    private getUserDataKey(context: builder.IBotStorageContext): string {
         assert(context.userId);
         return `user:${context.userId}`;
     }
 
     // Get id for conversation data documents
-    private getConversationDataId(context: builder.IBotStorageContext): string {
+    private getConversationDataKey(context: builder.IBotStorageContext): string {
         assert(context.conversationId);
         return `conversation:${context.conversationId}`;
     }
 
     // Get id for conversation data documents
-    private getPrivateConversationDataId(context: builder.IBotStorageContext): string {
+    private getPrivateConversationDataKey(context: builder.IBotStorageContext): string {
         assert(context.conversationId && context.userId);
         return `conversation:${context.conversationId}/user:${context.userId}`;
     }
