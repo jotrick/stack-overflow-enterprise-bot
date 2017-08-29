@@ -123,7 +123,7 @@ export class RemoveTagsDialog extends TriggerActionDialog {
                 if (notificationEntryRemoved) {
                     await tagStorage.saveTagAsync(tagEntry);
                     // find index of currTag in channelData.tags and remove
-                    let indexOfTagChannelData = channelData.followedTags.indexOf(tagEntry._id);
+                    let indexOfTagChannelData = channelData.followedTags.indexOf(tagEntry.key);
                     if (indexOfTagChannelData > -1) {
                         // this is the case that we found an entry
                         channelData.followedTags.splice(indexOfTagChannelData, 1);

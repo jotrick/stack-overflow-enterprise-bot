@@ -1,25 +1,10 @@
 import * as mongodb from "mongodb";
 import * as config from "config";
 
-// tslint:disable-next-line:variable-name
-export interface SOEQuestionEntry {
-    key: string; // using SOE's question.id as the question's id in our database
-    soeQuestion: any;
-    updateEntries: UpdateEntry[];
-};
-
-// tslint:disable-next-line:variable-name
-export interface UpdateEntry {
-    messageId: string;
-    conversationId: string;
-    serviceUrl: string;
-    locale: string;
-    isChannel: boolean;
-    notificationEntryConversationId: string;
-};
+let timestampKey = "timestamp";
 
 /** Replacable storage system. */
-export class MongoDbSOEQuestionStorage {
+export class MongoDbConfigStorage {
 
     private mongoDb: mongodb.Db;
     private collection: mongodb.Collection;
@@ -32,10 +17,10 @@ export class MongoDbSOEQuestionStorage {
     //     return resultMongoDbStorage;
     // }
 
-    public static createConnection(): MongoDbSOEQuestionStorage {
-        let collectionName = config.get("mongoDb.soeQuestionCollection");
+    public static createConnection(): MongoDbConfigStorage {
+        let collectionName = config.get("mongoDb.configCollection");
         let connectionString = config.get("mongoDb.connectionString");
-        let resultMongoDbStorage = new MongoDbSOEQuestionStorage(collectionName, connectionString);
+        let resultMongoDbStorage = new MongoDbConfigStorage(collectionName, connectionString);
         // await resultMongoDbStorage.initialize();
         resultMongoDbStorage.initialize();
         return resultMongoDbStorage;
@@ -46,19 +31,46 @@ export class MongoDbSOEQuestionStorage {
         private connectionString: string) {
     }
 
+    public async getTimestampConfigAsync(): Promise<number> {
+        let currentTimestampInSeconds = Math.floor(new Date().getTime() / 1000);
+        if (!this.collection) {
+            // need to send current timestamp in seconds
+            return currentTimestampInSeconds;
+        }
+
+        let filter = { "key": timestampKey };
+        let entry = await this.collection.findOne(filter);
+
+        if (entry && entry.timestamp) {
+            return entry.timestamp;
+        } else {
+            // this is the situation where there was no match
+            // thus, we need to send current timestamp in seconds
+            return currentTimestampInSeconds;
+        }
+    }
+
+    public async saveTimestampConfigAsync(newTimestamp: number): Promise<void> {
+        if (!this.collection) {
+            return;
+        }
+
+        let filter = { "key": timestampKey };
+        let entry = {
+            key: timestampKey,
+            timestamp: newTimestamp,
+        };
+
+        await this.collection.updateOne(filter, entry, { upsert: true });
+    }
+
     // Reads in data from storage
-    public async getSOEQuestionAsync(soeQuestion: any): Promise<SOEQuestionEntry> {
+    public async getGenericConfigAsync(key: string): Promise<any> {
         if (!this.collection) {
             return ({} as any);
         }
 
-        if (!soeQuestion || !soeQuestion.question_id) {
-            return ({} as any);
-        }
-
-        // it appears that often the id comes in as a number
-        let key = soeQuestion.question_id.toString().toLowerCase();
-
+        key = key.toLowerCase();
         let filter = { "key": key };
         let entry = await this.collection.findOne(filter);
 
@@ -69,14 +81,12 @@ export class MongoDbSOEQuestionStorage {
             // thus, we need to create the start of an entry that will be saved
             return {
                 key: key,
-                soeQuestion: soeQuestion,
-                updateEntries: [],
             };
         }
     }
 
     // Writes out data from storage
-    public async saveSOEQuestionAsync(entry: SOEQuestionEntry): Promise<void> {
+    public async saveGenericConfigAsync(entry: any): Promise<void> {
         if (!this.collection) {
             return;
         }
@@ -88,13 +98,10 @@ export class MongoDbSOEQuestionStorage {
     }
 
     // Deletes data from storage
-    public async deleteSOEQuestionAsync(key: string): Promise<void> {
+    public async deleteConfigAsync(key: string): Promise<void> {
         if (!this.collection) {
             return;
         }
-
-        // it appears that often the id comes in as a number
-        key = key.toString();
 
         key = key.toLowerCase();
         let filter = { "key": key };

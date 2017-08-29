@@ -64,7 +64,7 @@ export class SettingsDialog extends TriggerActionDialog {
             text += "**" + currTag + "**<br>";
         }
 
-        if (channelData.followedTags.length === 0) {
+        if (followedTags.length === 0) {
             text = "This conversation is currently not following any tags.<br>";
         }
 
