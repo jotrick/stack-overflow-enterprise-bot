@@ -70,8 +70,8 @@ app.get("/api/VSTSOauthCallback", VSTSTokenOAuth2API.setUserAccessToken(bot));
 app.get("/api/validateUser", AADUserValidation.validateUser(bot));
 app.get("/api/success", AADUserValidation.success(bot));
 
-// test endpoint to send request to with query params to start notification job
-app.get("/runNotificationJob", TestRunNotificationJob.getRequestHandler(bot));
+// test endpoint to send request to with query params to test notification job
+app.get("/testRunNotificationJob", TestRunNotificationJob.getRequestHandler(bot));
 
 // main endpoint to start notification job
 app.post("/runNotificationJob", RunNotificationJob.getRequestHandler(bot));
