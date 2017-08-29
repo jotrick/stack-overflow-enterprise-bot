@@ -36,7 +36,11 @@ export class SOEnterpriseAPI {
     // min here is used as the minimum timestamp for fetching questions based on last_activity_date
     // by setting fromdate to 1 (include everything) and using min for filtering last_activity_date, we can use this api call to fetch
     // the most recently new/updated questions
-    public async getNewAndUpdatedQuestions(min: string, session: builder.Session, useGlobalKey?: boolean): Promise<any> {
+    public async getNewAndUpdatedQuestions(min: string|number, session: builder.Session, useGlobalKey?: boolean): Promise<any> {
+        if (typeof min === "number") {
+            min = min.toString();
+        }
+
         let args = {
             "fromdate": "1",
             "filter": "withbody",

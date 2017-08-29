@@ -3,7 +3,8 @@ import { TriggerActionDialog } from "../utils/TriggerActionDialog";
 import { DialogIds } from "../utils/DialogIds";
 import { DialogMatches } from "../utils/DialogMatches";
 // import { MongoDbSOEQuestionStorage, SOEQuestionEntry } from "../storage/MongoDbSOEQuestionStorage";
-import { SOEQuestionEntry, UpdateEntry } from "../storage/MongoDbSOEQuestionStorage";
+// import { SOEQuestionEntry, UpdateEntry } from "../storage/MongoDbSOEQuestionStorage";
+import { UpdateEntry } from "../storage/MongoDbSOEQuestionStorage";
 import * as msTeams from "botbuilder-teams";
 import { O365ConnectorCardSectionNew } from "../utils/O365ConnectorCardSectionNew";
 import { renderTags } from "../apis/SOEnterpriseAPI";
@@ -15,14 +16,16 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
 
     private static async updateQuestionNotification(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let q: any = args.questionToSend;
-        let soeQuestionEntry: SOEQuestionEntry = args.soeQuestionEntry;
+        // let soeQuestionEntry: SOEQuestionEntry = args.soeQuestionEntry;
         let updateEntry: UpdateEntry = args.updateEntry;
         // let mongoDbSOEQuestionStorage: MongoDbSOEQuestionStorage = args.mongoDbSOEQuestionStorage;
         // let soeQuestionStorage: MongoDbSOEQuestionStorage = (args.constructorArgs.bot as SOEBot).getSOEQuestionStorage();
         // let notificationEntry: NotificationEntry = args.notificationEntry;
         // let resolvePromiseCallback: () => void = args.resolvePromiseCallback;
+        let stringOfChanges: string = args.stringOfChanges;
 
-        if (!q || !soeQuestionEntry || !updateEntry) {
+        // if (!q || !soeQuestionEntry || !updateEntry) {
+        if (!q || !updateEntry || !stringOfChanges) {
             // send nothing
             // resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
             session.endDialog();
@@ -51,7 +54,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
             .textFormat(builder.TextFormat.markdown)
             .attachments([
                 new msTeams.O365ConnectorCard(session)
-                    .title("UPDATED - " + q.title)
+                    .title(q.title)
                     .sections(
                         O365ConnectorCardSectionNew.create(session,
                             null, // section title
@@ -61,7 +64,13 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                             null, // activitySubtitle
                             null, // activityText
                             null, // images
-                            [ "Tags", renderTags(q.tags), "Answered:", String(q.is_answered), "# answers:", String(q.answer_count) ], // facts
+                            [
+                                "Tags",
+                                renderTags(q.tags),
+                                "Answered:",
+                                String(q.is_answered),
+                                "# answers:", String(q.answer_count),
+                            ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )
                     )
@@ -72,23 +81,25 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                     ]),
             ]);
 
-        session.connector.update(msg.toMessage(), (err, address) => {
-            if (!err) {
-                if (!updateEntry.isChannel) {
-                    // this is the case of a 1:1 chat
-                    // because updating the notification does not pull the notification to the bottom of the chat, here just send notification
-                    session.send(msg);
-                } else {
+        if (!updateEntry.isChannel) {
+            // this is the case of a 1:1 chat
+            // because updating the notification does not pull the notification to the bottom of the chat, just send a new notification
+            session.send(msg);
+            session.send("Changes occurred: " + stringOfChanges);
+            session.endDialog();
+        } else {
+            session.connector.update(msg.toMessage(), (err, address) => {
+                if (!err) {
                     // this is the case of a channel chat
                     // because updating the notification does not pull the notification to the bottom of the chat, we can send a message
-                    // in that reply chain pull the updated message down
-                    session.send("Message Updated");
+                    // in that reply chain to pull the updated message down
+                    session.send("Changes occurred: " + stringOfChanges);
+                } else {
+                    session.error(err);
                 }
-            } else {
-                session.error(err);
-            }
-            session.endDialog();
-        });
+                session.endDialog();
+            });
+        }
     }
 
     constructor(
