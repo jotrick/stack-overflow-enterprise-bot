@@ -10,6 +10,7 @@ import { DialogIds } from "./utils/DialogIds";
 import * as teams from "botbuilder-teams";
 import { MongoDbTagStorage } from "./storage/MongoDbTagStorage";
 import { MongoDbSOEQuestionStorage } from "./storage/MongoDbSOEQuestionStorage";
+import { MongoDbConfigStorage } from "./storage/MongoDbConfigStorage";
 
 // =========================================================
 // Bot Setup
@@ -63,6 +64,10 @@ export class SOEBot extends builder.UniversalBot {
 
     public getSOEQuestionStorage(): MongoDbSOEQuestionStorage {
         return this.get("soeQuestionStorage");
+    }
+
+    public getConfigStorage(): MongoDbConfigStorage {
+        return this.get("configStorage");
     }
 
     constructor(

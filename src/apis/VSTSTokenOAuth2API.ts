@@ -84,7 +84,7 @@ export class VSTSTokenOAuth2API {
         // };
 
         let tempTokensEntry = {
-            _id: randomValidationNumber,
+            key: randomValidationNumber,
             token: body.access_token,
             refreshToken: body.refresh_token,
         };
