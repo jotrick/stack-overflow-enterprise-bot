@@ -9,6 +9,7 @@ import { VSTSTokenOAuth2API } from "./apis/VSTSTokenOAuth2API";
 import * as teams from "botbuilder-teams";
 import { DefaultTab } from "./endpoints/DefaultTab";
 import { AllCommandsTab } from "./endpoints/AllCommandsTab";
+import { TestRunNotificationJob } from "./endpoints/TestRunNotificationJob";
 import { RunNotificationJob } from "./endpoints/RunNotificationJob";
 import { MongoDbBotStorage } from "./storage/MongoDbBotStorage";
 import { MongoDbBotChannelStorage } from "./storage/MongoDbBotChannelStorage";
@@ -69,8 +70,11 @@ app.get("/api/VSTSOauthCallback", VSTSTokenOAuth2API.setUserAccessToken(bot));
 app.get("/api/validateUser", AADUserValidation.validateUser(bot));
 app.get("/api/success", AADUserValidation.success(bot));
 
-// test endpoint to send request to with query params to start notification job
-app.get("/runNotificationJob", RunNotificationJob.runNotificationJob(bot));
+// test endpoint to send request to with query params to test notification job
+app.get("/testRunNotificationJob", TestRunNotificationJob.getRequestHandler(bot));
+
+// main endpoint to start notification job
+app.post("/runNotificationJob", RunNotificationJob.getRequestHandler(bot));
 
 // catch 404 and forward to error handler
 app.use((req: Request, res: Response, next: Function) => {
