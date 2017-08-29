@@ -10,7 +10,7 @@ export class SetAADObjectId implements builder.IMiddlewareMap {
 
         // let botStorage = await MongoDbAADObjectIdStorage.createConnection();
         // let x = {
-        //     aadObjectId: "f015046f-dccb-4e12-918e-e04bd2d987af",
+        //     aadObjectId: "",
         //     vstsToken: "token",
         //     vstsRefreshToken: "refresh_token",
         // };

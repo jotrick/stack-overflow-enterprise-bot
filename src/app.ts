@@ -15,6 +15,7 @@ import { MongoDbBotChannelStorage } from "./storage/MongoDbBotChannelStorage";
 import { AADUserValidation } from "./apis/AADUserValidation";
 import { MongoDbTagStorage } from "./storage/MongoDbTagStorage";
 import { MongoDbSOEQuestionStorage } from "./storage/MongoDbSOEQuestionStorage";
+import { MongoDbConfigStorage } from "./storage/MongoDbConfigStorage";
 
 // Configure instrumentation - tooling with Azure
 // let appInsights = require("applicationinsights");
@@ -42,19 +43,22 @@ let connector = new teams.TeamsChatConnector({
 let channelStorage = null;
 let tagStorage = null;
 let soeQuestionStorage = null;
+let configStorage = null;
 let botStorage = null;
 if (config.get("channelStorageType") === "mongoDb") {
+    botStorage = new MongoDbBotStorage(config.get("mongoDb.botStateCollection"), config.get("mongoDb.connectionString"));
     channelStorage = new MongoDbBotChannelStorage(config.get("mongoDb.botStateCollection"), config.get("mongoDb.connectionString"));
     tagStorage = MongoDbTagStorage.createConnection();
     soeQuestionStorage = MongoDbSOEQuestionStorage.createConnection();
-    botStorage = new MongoDbBotStorage(config.get("mongoDb.botStateCollection"), config.get("mongoDb.connectionString"));
+    configStorage = MongoDbConfigStorage.createConnection();
 };
 
 let botSettings = {
+    storage: botStorage,
     channelStorage: channelStorage,
     tagStorage: tagStorage,
     soeQuestionStorage: soeQuestionStorage,
-    storage: botStorage,
+    configStorage: configStorage,
 };
 
 let bot = new SOEBot(connector, botSettings);

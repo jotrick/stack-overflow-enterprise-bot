@@ -5,7 +5,7 @@ import * as config from "config";
 
 // tslint:disable-next-line:variable-name
 export interface AADObjectIdEntry {
-    _id?: string;
+    key?: string;
     aadObjectId: string;
     vstsToken: string;
     vstsRefreshToken: string;
@@ -60,8 +60,8 @@ export class MongoDbAADObjectIdStorage {
                 return;
             }
 
-            let filter = { "_id": "aadObjectId:" + entry.aadObjectId };
-            entry._id = "aadObjectId:" + entry.aadObjectId;
+            let filter = { "key": "aadObjectId:" + entry.aadObjectId };
+            entry.key = "aadObjectId:" + entry.aadObjectId;
             // let document = {
             //     teamId: context.teamId,
             //     channelId: context.channelId,
@@ -84,7 +84,7 @@ export class MongoDbAADObjectIdStorage {
                 return;
             }
 
-            let filter = { "_id": entry._id };
+            let filter = { "key": entry.key };
             // let document = {
             //     teamId: context.teamId,
             //     channelId: context.channelId,
@@ -107,7 +107,7 @@ export class MongoDbAADObjectIdStorage {
                 return;
             }
 
-            let filter = { "_id": "aadObjectId:" + aadObjectId };
+            let filter = { "key": "aadObjectId:" + aadObjectId };
             // let document = {
             //     teamId: context.teamId,
             //     channelId: context.channelId,

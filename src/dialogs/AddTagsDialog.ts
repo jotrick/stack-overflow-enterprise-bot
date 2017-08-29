@@ -141,7 +141,7 @@ export class AddTagsDialog extends TriggerActionDialog {
                 if (!conversationIdAlreadyFollows) {
                     tagEntry.notificationEntries.push(newNotificationEntry);
                     await tagStorage.saveTagAsync(tagEntry);
-                    channelData.followedTags.push(tagEntry._id);
+                    channelData.followedTags.push(tagEntry.key);
                     messageText += "**" + currTag + "**<br>";
                 } else {
                     messageText += "**" + currTag + "** - already been following<br>";

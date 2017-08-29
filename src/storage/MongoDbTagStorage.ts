@@ -3,7 +3,7 @@ import * as config from "config";
 
 // tslint:disable-next-line:variable-name
 export interface TagEntry {
-    _id: string; // make sure it is lower case
+    key: string; // make sure it is lower case
     notificationEntries: NotificationEntry[];
 };
 
@@ -44,20 +44,20 @@ export class MongoDbTagStorage {
     }
 
     // Reads in data from storage
-    public async getTagAsync(_id: string): Promise<TagEntry> {
+    public async getTagAsync(key: string): Promise<TagEntry> {
         if (!this.tagCollection) {
             return ({} as any);
         }
 
-        _id = _id.toLowerCase();
-        let filter = { "_id": _id };
+        key = key.toLowerCase();
+        let filter = { "key": key };
         let tagEntry = await this.tagCollection.findOne(filter);
 
         if (tagEntry) {
             return tagEntry;
         } else {
             return {
-                _id: _id,
+                key: key,
                 notificationEntries: [],
             };
         }
@@ -69,20 +69,20 @@ export class MongoDbTagStorage {
             return;
         }
 
-        tagEntry._id = tagEntry._id.toLowerCase();
-        let filter = { "_id": tagEntry._id };
+        tagEntry.key = tagEntry.key.toLowerCase();
+        let filter = { "key": tagEntry.key };
 
         await this.tagCollection.updateOne(filter, tagEntry, { upsert: true });
     }
 
     // Deletes data from storage
-    public async deleteTagAsync(_id: string): Promise<void> {
+    public async deleteTagAsync(key: string): Promise<void> {
         if (!this.tagCollection) {
             return;
         }
 
-        _id = _id.toLowerCase();
-        let filter = { "_id": _id };
+        key = key.toLowerCase();
+        let filter = { "key": key };
 
         await this.tagCollection.deleteMany(filter);
     }

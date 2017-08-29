@@ -7,9 +7,10 @@ import { renderTags } from "../apis/SOEnterpriseAPI";
 import { O365ConnectorCardSectionNew } from "../utils/O365ConnectorCardSectionNew";
 import { Strings } from "../locale/locale";
 import { startReplyChainInChannel } from "../utils/DialogUtils";
-import { MongoDbSOEQuestionStorage, SOEQuestionEntry } from "../storage/MongoDbSOEQuestionStorage";
+// import { MongoDbSOEQuestionStorage, SOEQuestionEntry } from "../storage/MongoDbSOEQuestionStorage";
+import { SOEQuestionEntry } from "../storage/MongoDbSOEQuestionStorage";
 import { NotificationEntry } from "../storage/MongoDbTagStorage";
-import { SOEBot } from "../SOEBot";
+// import { SOEBot } from "../SOEBot";
 
 export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
 
@@ -17,13 +18,14 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
         let q: any = args.questionToSend;
         let soeQuestionEntry: SOEQuestionEntry = args.soeQuestionEntry;
         // let soeQuestionStorage: MongoDbSOEQuestionStorage = args.soeQuestionStorage;
-        let soeQuestionStorage: MongoDbSOEQuestionStorage = (args.constructorArgs.bot as SOEBot).getSOEQuestionStorage();
+        // let soeQuestionStorage: MongoDbSOEQuestionStorage = (args.constructorArgs.bot as SOEBot).getSOEQuestionStorage();
         let notificationEntry: NotificationEntry = args.notificationEntry;
-        // let resolvePromiseCallback: () => void = args.resolvePromiseCallback;
+        let resolvePromiseCallback: () => void = args.resolvePromiseCallback;
 
         // something has gone wrong if any one of these does not exist
         // if (!q || !soeQuestionEntry || !soeQuestionStorage || !notificationEntry || !resolvePromiseCallback) {
-        if (!q || !soeQuestionEntry || !soeQuestionStorage || !notificationEntry) {
+        // if (!q || !soeQuestionEntry || !soeQuestionStorage || !notificationEntry) {
+        if (!q || !soeQuestionEntry || !notificationEntry || !resolvePromiseCallback) {
             // send nothing
             // resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
             session.endDialog();
@@ -44,7 +46,14 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                             null, // activitySubtitle
                             null, // activityText
                             null, // images
-                            [ "Tags", renderTags(q.tags), "Answered:", String(q.is_answered), "# answers:", String(q.answer_count) ], // facts
+                            [
+                                "Tags",
+                                renderTags(q.tags),
+                                "Answered:",
+                                String(q.is_answered),
+                                "# answers:",
+                                String(q.answer_count),
+                            ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )
                     )
@@ -71,12 +80,12 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                         isChannel: false,
                         notificationEntryConversationId: notificationEntry.conversationId,
                     });
-                    await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
+                    // await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
                 } else {
                     session.error(err);
                 }
 
-                // resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
+                resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
                 session.endDialog();
             });
         } else {
@@ -91,12 +100,11 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                 isChannel: true,
                 notificationEntryConversationId: notificationEntry.conversationId,
             });
-            await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
+            // await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
 
-            // resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
+            resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
+            session.endDialog();
         }
-
-        session.endDialog();
     }
 
     constructor(

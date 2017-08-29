@@ -5,7 +5,7 @@ import * as config from "config";
 
 // tslint:disable-next-line:variable-name
 export interface TempTokensEntry {
-    _id: string;
+    key: string;
     token: string;
     refreshToken: string;
 };
@@ -31,14 +31,14 @@ export class MongoDbTempTokensStorage {
     }
 
     // Reads in data from storage
-    public async getTempTokensAsync(_id: string): Promise<TempTokensEntry> {
+    public async getTempTokensAsync(key: string): Promise<TempTokensEntry> {
         // if (context.channelId) {
             // await this.initialize();
             if (!this.tempTokensCollection) {
                 return ({} as any);
             }
 
-            let filter = { "_id": _id };
+            let filter = { "key": key };
             let tempTokensEntry = await this.tempTokensCollection.findOne(filter);
             // await this.close();
             if (tempTokensEntry) {
@@ -59,7 +59,7 @@ export class MongoDbTempTokensStorage {
                 return;
             }
 
-            let filter = { "_id": tempTokensEntry._id };
+            let filter = { "key": tempTokensEntry.key };
             // let document = {
             //     teamId: context.teamId,
             //     channelId: context.channelId,
@@ -75,14 +75,14 @@ export class MongoDbTempTokensStorage {
     }
 
     // Writes out data from storage
-    public async deleteTempTokensAsync(_id: string): Promise<void> {
+    public async deleteTempTokensAsync(key: string): Promise<void> {
         // if (context.teamId && context.channelId && data.channelData) {
             // await this.initialize();
             if (!this.tempTokensCollection) {
                 return;
             }
 
-            let filter = { "_id": _id };
+            let filter = { "key": key };
             // let document = {
             //     teamId: context.teamId,
             //     channelId: context.channelId,

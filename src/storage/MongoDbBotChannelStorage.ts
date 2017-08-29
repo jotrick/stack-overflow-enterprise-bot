@@ -19,7 +19,7 @@ export class MongoDbBotChannelStorage implements IBotChannelStorage {
         if (context.channelId) {
             await this.initialize();
 
-            let filter = { "_id": this.getChannelDataId(context) };
+            let filter = { "key": this.getChannelDataKey(context) };
             let document = await this.botStateCollection.findOne(filter);
             if (document && document.data) {
                 return { channelData: document.data };
@@ -36,8 +36,9 @@ export class MongoDbBotChannelStorage implements IBotChannelStorage {
         if (context.teamId && context.channelId && data.channelData) {
             await this.initialize();
 
-            let filter = { "_id": this.getChannelDataId(context) };
+            let filter = { "key": this.getChannelDataKey(context) };
             let document = {
+                key: this.getChannelDataKey(context),
                 teamId: context.teamId,
                 channelId: context.channelId,
                 data: data.channelData,
@@ -78,7 +79,7 @@ export class MongoDbBotChannelStorage implements IBotChannelStorage {
     }
 
     // Get id for channel data documents
-    private getChannelDataId(context: IBotChannelStorageContext): string {
+    private getChannelDataKey(context: IBotChannelStorageContext): string {
         assert(context.channelId);
         return `channel:${context.channelId}`;
     }
