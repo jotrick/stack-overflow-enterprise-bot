@@ -171,12 +171,12 @@ export class SOEBot extends builder.UniversalBot {
 
     // set incoming event to any because membersAdded is not a field in builder.IEvent
     private async conversationUpdateHandler(event: any): Promise<void> {
-        let session = await loadSessionAsync(this, event);
+        // let session = await loadSessionAsync(this, event);
 
-        if (event.membersAdded && event.membersAdded[0].id && event.membersAdded[0].id.endsWith(config.get("bot.botId"))) {
-            session.send(Strings.bot_introduction); // probably only works in Teams
-        } else {
-            session.send(Strings.bot_welcome_to_new_person);
-        }
+        // if (event.membersAdded && event.membersAdded[0].id && event.membersAdded[0].id.endsWith(config.get("bot.botId"))) {
+        //     session.send(Strings.bot_introduction); // probably only works in Teams
+        // } else {
+        //     session.send(Strings.bot_welcome_to_new_person);
+        // }
     }
 }
