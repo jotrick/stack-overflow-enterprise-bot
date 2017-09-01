@@ -65,18 +65,16 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                             null, // activityText
                             null, // images
                             [
-                                "Tags",
-                                renderTags(q.tags),
-                                "Answered:",
-                                String(q.is_answered),
-                                "# answers:", String(q.answer_count),
+                                Strings.field_label_tags, renderTags(q.tags),
+                                Strings.field_label_answered, String(q.is_answered),
+                                Strings.field_label_answered, String(q.answer_count),
                             ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )
                     )
                     .potentialAction([
                         new msTeams.O365ConnectorCardViewAction(session)
-                            .name(Strings.view_so_question_label)
+                            .name(Strings.button_label_view_so_question)
                             .target(q.link),
                     ]),
             ]);
@@ -85,7 +83,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
             // this is the case of a 1:1 chat
             // because updating the notification does not pull the notification to the bottom of the chat, just send a new notification
             session.send(msg);
-            session.send("Changes occurred: " + stringOfChanges);
+            session.send(Strings.msg_question_updated + stringOfChanges);
             session.endDialog();
         } else {
             session.connector.update(msg.toMessage(), (err, address) => {
@@ -93,7 +91,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                     // this is the case of a channel chat
                     // because updating the notification does not pull the notification to the bottom of the chat, we can send a message
                     // in that reply chain to pull the updated message down
-                    session.send("Changes occurred: " + stringOfChanges);
+                    session.send(Strings.msg_question_updated + stringOfChanges);
                 } else {
                     session.error(err);
                 }

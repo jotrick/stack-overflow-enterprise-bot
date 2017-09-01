@@ -28,14 +28,14 @@ export class RemoveTagsDialog extends TriggerActionDialog {
         } else if (tagInputStringFromSettingsCard) {
             next({ response: tagInputStringFromSettingsCard });
         } else {
-            builder.Prompts.text(session, "Enter tags to remove");
+            builder.Prompts.text(session, Strings.prompt_enter_tags_to_remove);
         }
     }
 
     private static async getTags(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let tagInputString = args.response.trim();
         if (!tagInputString) {
-            session.send("You did not enter any tags");
+            session.send(Strings.msg_entered_no_tags);
             session.endDialog();
             return;
         }
@@ -65,8 +65,8 @@ export class RemoveTagsDialog extends TriggerActionDialog {
         }
 
         session.dialogData.tags = tags;
-        let buttonText = session.gettext(Strings.tags_confirmation_yes) + "|" + session.gettext(Strings.tags_confirmation_no);
-        let messageText = "You are about to STOP FOLLOWING tags:<br>";
+        let buttonText = session.gettext(Strings.button_label_yes) + "|" + session.gettext(Strings.button_label_no);
+        let messageText = session.gettext(Strings.msg_confirm_stop_follow);
         for (let currTag of tags) {
             messageText += "**" + currTag + "**<br>";
         }
@@ -76,9 +76,9 @@ export class RemoveTagsDialog extends TriggerActionDialog {
     private static async confirmTags(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let tags = session.dialogData.tags;
 
-        if (args.response.entity === session.gettext(Strings.tags_confirmation_yes)) {
+        if (args.response.entity === session.gettext(Strings.button_label_yes)) {
             if (!tags || tags.length === 0) {
-                session.send("You did not enter any tags");
+                session.send(Strings.msg_entered_no_tags);
                 session.endDialog();
                 return;
             }
@@ -97,7 +97,7 @@ export class RemoveTagsDialog extends TriggerActionDialog {
             if (!channelData.followedTags) {
                 channelData.followedTags = [];
             }
-            let messageText = "Tags Successfully Removed:<br>";
+            let messageText = session.gettext(Strings.msg_confirm_tags_unfollowed);
             for (let currTag of tags) {
                 let tagEntry = await tagStorage.getTagAsync(currTag);
 
@@ -128,9 +128,9 @@ export class RemoveTagsDialog extends TriggerActionDialog {
                         // this is the case that we found an entry
                         channelData.followedTags.splice(indexOfTagChannelData, 1);
                     }
-                    messageText += "**" + currTag + "**<br>";
+                    messageText += `**${currTag}**<br>`;
                 } else {
-                    messageText += "**" + currTag + "** - not removed - was not following<br>";
+                    messageText += `**${currTag}** ${session.gettext(Strings.msg_not_removed_not_followed)}<br>`;
                 }
             }
 
@@ -139,7 +139,7 @@ export class RemoveTagsDialog extends TriggerActionDialog {
 
             session.send(messageText);
         } else {
-            session.send("No tags removed");
+            session.send(Strings.msg_no_tags_removed);
         }
         session.endDialog();
     }

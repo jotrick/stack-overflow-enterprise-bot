@@ -50,7 +50,6 @@ export const DialogMatches = {
     // *************************** END OF EXAMPLES *********************************
 
     // Add regex or string intent matches for dialogs
-    SOEShowQuestionsMatch: /soe questions/i,
     AddTagsDialogMatch: /follow tags?(.*)/i,
     AddTagsDialogMatch2: /add tags?(.*)/i,
     ChannelDataDialogMatch: /channel data/i,

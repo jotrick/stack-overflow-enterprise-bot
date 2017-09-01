@@ -38,7 +38,6 @@ import { UpdateTextMsgSetupDialog } from "./examples/teams/UpdateTextMsgSetupDia
 
 // Add imports for Stack Overflow Enterprise dialogs
 import { SOELoginDialog } from "./SOELoginDialog";
-import { SOEShowQuestionsDialog } from "./SOEShowQuestionsDialog";
 import { AddTagsDialog } from "./AddTagsDialog";
 import { ChannelDataDialog } from "./ChannelDataDialog";
 import { HelpDialog } from "./HelpDialog";
@@ -105,7 +104,6 @@ export class RootDialog extends builder.IntentDialog {
 
         // Add child dialogs
         new SOELoginDialog(bot);
-        new SOEShowQuestionsDialog(bot);
         new AddTagsDialog(bot);
         new ChannelDataDialog(bot);
         new HelpDialog(bot);
