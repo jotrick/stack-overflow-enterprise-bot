@@ -21,7 +21,7 @@ export class AddTagsDialog extends TriggerActionDialog {
         if (messageTenantId !== validationTenantId &&
             args.tenantId !== validationTenantId)
         {
-            session.send("I'm sorry, but you do not have permission to follow tags for this bot.");
+            session.send(Strings.msg_invalid_tenant);
             session.endDialog();
             return;
         }
@@ -40,14 +40,14 @@ export class AddTagsDialog extends TriggerActionDialog {
         } else if (tagInputStringFromSettingsCard) {
             next({ response: tagInputStringFromSettingsCard });
         } else {
-            builder.Prompts.text(session, "Enter tags");
+            builder.Prompts.text(session, Strings.prompt_enter_tags);
         }
     }
 
     private static async getTags(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let tagInputString = args.response.trim();
         if (!tagInputString) {
-            session.send("You did not enter any tags");
+            session.send(Strings.msg_entered_no_tags);
             session.endDialog();
             return;
         }
@@ -77,10 +77,10 @@ export class AddTagsDialog extends TriggerActionDialog {
         }
 
         session.dialogData.tags = tags;
-        let buttonText = session.gettext(Strings.tags_confirmation_yes) + "|" + session.gettext(Strings.tags_confirmation_no);
-        let messageText = "You are about to setup tags:<br>";
+        let buttonText = session.gettext(Strings.button_label_yes) + "|" + session.gettext(Strings.button_label_no);
+        let messageText = session.gettext(Strings.prompt_confirm_set_up_tags);
         for (let currTag of tags) {
-            messageText += "**" + currTag + "**<br>";
+           messageText += `**${currTag}**<br>`;
         }
         builder.Prompts.choice(session, messageText, buttonText, { listStyle: builder.ListStyle["button"] });
     }
@@ -88,9 +88,9 @@ export class AddTagsDialog extends TriggerActionDialog {
     private static async confirmTags(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let tags = session.dialogData.tags;
 
-        if (args.response.entity === session.gettext(Strings.tags_confirmation_yes)) {
+        if (args.response.entity === session.gettext(Strings.button_label_yes)) {
             if (!tags || tags.length === 0) {
-                session.send("You did not enter any tags");
+                session.send(Strings.msg_entered_no_tags);
                 session.endDialog();
                 return;
             }
@@ -118,7 +118,7 @@ export class AddTagsDialog extends TriggerActionDialog {
             if (!channelData.followedTags) {
                 channelData.followedTags = [];
             }
-            let messageText = "Tags Successfully Set up:<br>";
+            let messageText = session.gettext(Strings.msg_confirm_tags_followed);
             for (let currTag of tags) {
                 let tagEntry = await tagStorage.getTagAsync(currTag);
 
@@ -142,9 +142,9 @@ export class AddTagsDialog extends TriggerActionDialog {
                     tagEntry.notificationEntries.push(newNotificationEntry);
                     await tagStorage.saveTagAsync(tagEntry);
                     channelData.followedTags.push(tagEntry.key);
-                    messageText += "**" + currTag + "**<br>";
+                    messageText += `**${currTag}**<br>`;
                 } else {
-                    messageText += "**" + currTag + "** - already been following<br>";
+                    messageText += `**${currTag}** ${session.gettext(Strings.msg_already_followed)}<br>`;
                 }
             }
 
@@ -153,7 +153,7 @@ export class AddTagsDialog extends TriggerActionDialog {
 
             session.send(messageText);
         } else {
-            session.send("No tags setup");
+            session.send(Strings.msg_no_tags_changed);
         }
         session.endDialog();
     }

@@ -38,15 +38,15 @@
           "commands": [
             {
               "title": "follow tags",
-              "description": "Used to start following tags in this conversation"
+              "description": "Get notified on all questions with specific tags"
             },
             {
               "title": "remove tags",
-              "description": "Used to stop following tags in this conversation"
+              "description": "Stop notifications for specific tags"
             },
             {
               "title": "settings",
-              "description": "Used to view and setup the settings for this conversation"
+              "description": "View, add, and remove the tags you are following"
             }
           ]
         },
@@ -57,15 +57,15 @@
           "commands": [
             {
               "title": "follow tags",
-              "description": "Used to start following tags in this conversation"
+              "description": "Get notified on all questions with specific tags"
             },
             {
               "title": "remove tags",
-              "description": "Used to stop following tags in this conversation"
+              "description": "Stop notifications for specific tags"
             },
             {
               "title": "settings",
-              "description": "Used to view and setup the settings for this conversation"
+              "description": "View, add, and remove the tags you are following"
             }
           ]
         }

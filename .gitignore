@@ -42,3 +42,5 @@ jspm_packages
 build/
 _package/
 src/locale/locale.ts
+manifest/MicroStack-Test.zip
+.vscode/launch.json

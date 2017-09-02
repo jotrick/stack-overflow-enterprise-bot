@@ -3,6 +3,7 @@ import { TriggerActionDialog } from "../utils/TriggerActionDialog";
 import { DialogIds } from "../utils/DialogIds";
 import { DialogMatches } from "../utils/DialogMatches";
 import { ChannelData } from "../utils/ChannelData";
+import { Strings } from "../locale/locale";
 import * as teams from "botbuilder-teams";
 
 export class SettingsDialog extends TriggerActionDialog {
@@ -10,18 +11,18 @@ export class SettingsDialog extends TriggerActionDialog {
     private static async showSettings(session: builder.Session, args?: any | builder.IDialogResult<any>, next?: (args?: builder.IDialogResult<any>) => void): Promise<void> {
         let addTagsAction = new teams.O365ConnectorCardActionCard(session)
             .id("addTagsActionId")
-            .name("Add Tags")
+            .name(Strings.button_label_add_tags)
             .inputs([
                 new teams.O365ConnectorCardTextInput(session)
                     .id("addTagInputStringFromSettingsCard")
-                    .title("Enter tags to start following - separate tag names with ',' or ';'")
+                    .title(Strings.prompt_for_tags)
                     .isMultiline(false)
                     .isRequired(true),
             ])
             .actions([
                 new teams.O365ConnectorCardHttpPOST(session)
                     .id("addTags")
-                    .name("Add Tags")
+                    .name(Strings.button_label_add_tags)
                     .body(JSON.stringify({
                         tagInputStringFromSettingsCard: "{{addTagInputStringFromSettingsCard.value}}",
                     })),
@@ -40,11 +41,11 @@ export class SettingsDialog extends TriggerActionDialog {
 
         let removeTagsAction = new teams.O365ConnectorCardActionCard(session)
         .id("removeTagsActionId")
-        .name("Remove Tags")
+        .name(Strings.button_label_remove_tags)
         .inputs([
             new teams.O365ConnectorCardMultichoiceInput(session)
                 .id("removeTagInputStringFromSettingsCard")
-                .title("Pick tags to stop following")
+                .title(Strings.prompt_for_tags_unfollow)
                 .isMultiSelect(true)
                 .isRequired(true)
                 .style("expanded")
@@ -53,19 +54,19 @@ export class SettingsDialog extends TriggerActionDialog {
         .actions([
             new teams.O365ConnectorCardHttpPOST(session)
                 .id("removeTags")
-                .name("Remove Tags")
+                .name(Strings.button_label_remove_tags)
                 .body(JSON.stringify({
                     tagInputStringFromSettingsCard: "{{removeTagInputStringFromSettingsCard.value}}",
                 })),
         ]);
 
-        let text = "This conversation is currently following tags:<br>";
+        let text = session.gettext(Strings.msg_currently_following_tags);
         for (let currTag of followedTags) {
             text += "**" + currTag + "**<br>";
         }
 
         if (followedTags.length === 0) {
-            text = "This conversation is currently not following any tags.<br>";
+            text = session.gettext(Strings.msg_currently_following_no_tags);
         }
 
         // added to created space between the text and the buttons
@@ -74,7 +75,7 @@ export class SettingsDialog extends TriggerActionDialog {
         let card = new teams.O365ConnectorCard(session)
             // .summary("O365 card summary")
             .themeColor("#F48024")
-            .title("Settings")
+            .title(Strings.prompt_settings)
             .text(text)
             .potentialAction([
                 addTagsAction,

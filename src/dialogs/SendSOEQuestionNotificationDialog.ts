@@ -47,19 +47,16 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                             null, // activityText
                             null, // images
                             [
-                                "Tags",
-                                renderTags(q.tags),
-                                "Answered:",
-                                String(q.is_answered),
-                                "# answers:",
-                                String(q.answer_count),
+                                Strings.field_label_tags, renderTags(q.tags),
+                                Strings.field_label_answered, String(q.is_answered),
+                                Strings.field_label_answered, String(q.answer_count),
                             ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )
                     )
                     .potentialAction([
                         new msTeams.O365ConnectorCardViewAction(session)
-                            .name(Strings.view_so_question_label)
+                            .name(Strings.button_label_view_so_question)
                             .target(q.link),
                     ]),
             ]);
