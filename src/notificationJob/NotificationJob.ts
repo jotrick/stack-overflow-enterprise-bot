@@ -183,7 +183,7 @@ export class NotificationJob {
             }
 
             // only update if a new tag is added (not if one removed)
-            if (q.tags.length > savedQuestion.tags.length) {
+            if (q.tags && savedQuestion.tags && q.tags.length > savedQuestion.tags.length) {
                 // tagsChange = [];
                 // for (let currNewTag of q.tags) {
                 //     if (savedQuestion.tags.indexOf(currNewTag) === -1) {

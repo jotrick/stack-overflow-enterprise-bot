@@ -67,7 +67,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                             [
                                 Strings.field_label_tags, renderTags(q.tags),
                                 Strings.field_label_answered, String(q.is_answered),
-                                Strings.field_label_answered, String(q.answer_count),
+                                Strings.field_label_num_answers, String(q.answer_count),
                             ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )
@@ -83,7 +83,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
             // this is the case of a 1:1 chat
             // because updating the notification does not pull the notification to the bottom of the chat, just send a new notification
             session.send(msg);
-            session.send(Strings.msg_question_updated + stringOfChanges);
+            session.send(session.gettext(Strings.msg_question_updated) + stringOfChanges);
             session.endDialog();
         } else {
             session.connector.update(msg.toMessage(), (err, address) => {
@@ -91,7 +91,7 @@ export class UpdateSOEQuestionNotificationDialog extends TriggerActionDialog {
                     // this is the case of a channel chat
                     // because updating the notification does not pull the notification to the bottom of the chat, we can send a message
                     // in that reply chain to pull the updated message down
-                    session.send(Strings.msg_question_updated + stringOfChanges);
+                    session.send(session.gettext(Strings.msg_question_updated) + stringOfChanges);
                 } else {
                     session.error(err);
                 }
