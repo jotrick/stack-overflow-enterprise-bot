@@ -43,7 +43,7 @@ export class SOELoginDialog extends TriggerActionDialog {
     ) {
         super(bot,
             DialogIds.SOELoginDialogId,
-            DialogMatches.VSTSLogInDialogMatch,
+            DialogMatches.SOE_Login_Dialog_Intent, // currently we should never get to this dialog
             SOELoginDialog.sendAuthorizeMsg,
         );
     }

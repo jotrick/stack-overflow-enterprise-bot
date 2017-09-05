@@ -49,7 +49,7 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                             [
                                 Strings.field_label_tags, renderTags(q.tags),
                                 Strings.field_label_answered, String(q.is_answered),
-                                Strings.field_label_answered, String(q.answer_count),
+                                Strings.field_label_num_answers, String(q.answer_count),
                             ], // facts
                             // tslint:disable-next-line:trailing-comma
                         )

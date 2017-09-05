@@ -21,8 +21,6 @@ export const DialogMatches = {
     AnimatedGifDialogMatch: /gif/i,
     DeeplinkDialogMatch: /deeplink/i,
     GetLastDialogUsedDialogMatch: /last dialog/i,
-    HelloDialogMatch: /hello/i,
-    HelloDialogMatch2: /hi/i,
 
     HeroCardDialogMatch: /hero card/i,
     MultiDialogMatch: /multi dialog 1/i,
@@ -53,6 +51,8 @@ export const DialogMatches = {
     AddTagsDialogMatch: /follow tags?(.*)/i,
     AddTagsDialogMatch2: /add tags?(.*)/i,
     ChannelDataDialogMatch: /channel data/i,
+    HelloDialogMatch: regexCreator("hello"),
+    HelloDialogMatch2: regexCreator("hi"),
     HelpDialogMatch: regexCreator("help"),
     RemoveTagsDialogMatch: /unfollow tags?(.*)/i,
     RemoveTagsDialogMatch2: /remove tags?(.*)/i,
@@ -62,4 +62,5 @@ export const DialogMatches = {
     SettingsDialogMatch: /show followed tags/i,
     SettingsDialogMatch2: regexCreator("settings?"),
     SettingsDialogMatch3: regexCreator("config"),
+    SOE_Login_Dialog_Intent: "SOE_Login_Dialog_Intent",
 };
