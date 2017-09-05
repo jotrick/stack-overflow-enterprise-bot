@@ -101,5 +101,6 @@
     "msg_confirm_stop_follow": "Confirm that you want to stop following these tags:<br>",
     "msg_confirm_tags_unfollowed": "You are no longer following these tags and will no longer see notifications on questions with these tags:<br>",
     "msg_no_tags_removed": "No tags removed.",
-    "msg_help": "follow tags *tagA, tagB, ...* - Follow tagA, tagB, etc. and see notifications on questions with these tags<br>remove tags *tagA, tagB, ...* - Stop following tagA, tagB, etc.<br>settings - View, add, and remove the tags you are following<br>"
+    "msg_help": "follow tags *tagA, tagB, ...* - Follow tagA, tagB, etc. and see notifications on questions with these tags<br>remove tags *tagA, tagB, ...* - Stop following tagA, tagB, etc.<br>settings - View, add, and remove the tags you are following<br>",
+    "msg_hello": "Hello<br>If you need help try entering `help` or `settings`"
 }
