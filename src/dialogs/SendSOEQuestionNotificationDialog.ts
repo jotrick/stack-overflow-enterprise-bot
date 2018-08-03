@@ -25,9 +25,13 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
         // something has gone wrong if any one of these does not exist
         // if (!q || !soeQuestionEntry || !soeQuestionStorage || !notificationEntry || !resolvePromiseCallback) {
         // if (!q || !soeQuestionEntry || !soeQuestionStorage || !notificationEntry) {
-        if (!q || !soeQuestionEntry || !notificationEntry || !resolvePromiseCallback) {
+
+        // due to issues we are seeing - we are going to always assume resolvePromiseCallback is present in order to save other
+        // notifications
+        // if (!q || !soeQuestionEntry || !notificationEntry || !resolvePromiseCallback) {
+        if (!q || !soeQuestionEntry || !notificationEntry) {
             // send nothing
-            // resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
+            resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
             session.endDialog();
             return;
         }
@@ -79,28 +83,32 @@ export class SendSOEQuestionNotificationDialog extends TriggerActionDialog {
                     });
                     // await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
                 } else {
-                    session.error(err);
+                    // not sure if this was stopping the flow from getting to resolvePromiseCallback, but going to remove
+                    // so purposefully not doing anything
+                    // session.error(err);
                 }
 
                 resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
                 session.endDialog();
             });
         } else {
-            // this is the case of notification being sent to a channel
-            let replyChainAddress = await startReplyChainInChannel((session.connector as any), msg, notificationEntry.conversationId);
+            try {
+                // this is the case of notification being sent to a channel
+                let replyChainAddress = await startReplyChainInChannel((session.connector as any), msg, notificationEntry.conversationId);
 
-            soeQuestionEntry.updateEntries.push({
-                messageId: replyChainAddress.id,
-                conversationId: replyChainAddress.conversation.id,
-                serviceUrl: replyChainAddress.serviceUrl,
-                locale: notificationEntry.locale,
-                isChannel: true,
-                notificationEntryConversationId: notificationEntry.conversationId,
-            });
-            // await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
-
-            resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
-            session.endDialog();
+                soeQuestionEntry.updateEntries.push({
+                    messageId: replyChainAddress.id,
+                    conversationId: replyChainAddress.conversation.id,
+                    serviceUrl: replyChainAddress.serviceUrl,
+                    locale: notificationEntry.locale,
+                    isChannel: true,
+                    notificationEntryConversationId: notificationEntry.conversationId,
+                });
+                // await soeQuestionStorage.saveSOEQuestionAsync(soeQuestionEntry);
+            } finally {
+                resolvePromiseCallback(); // this callback resolves one of the promises that the database connections in src/endpoints/RunNotificationJob.ts are waiting on to close
+                session.endDialog();
+            }
         }
     }
 
